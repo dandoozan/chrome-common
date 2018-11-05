@@ -32,9 +32,16 @@ export function closeTab(tab, cb) {
 export function closeTabs(tabs, cb) {
     chrome.tabs.remove(tabs.map((tab) => tab.id), cb);
 }
-export function createNewWindowWithTabs(tabs, cb) {
-    const tabUrls = tabs.map((tab) => tab.url);
-    chrome.windows.create({
-        url: tabUrls
-    }, cb);
+
+export function createNewWindow(cb) {
+    chrome.windows.create({}, cb);
+}
+
+export function moveTabToNewWindow(tab, cb) {
+    chrome.windows.create({ tabId: tab.id }, cb);
+}
+
+export function moveTabsToExistingWindow(tabs, windowId, cb) {
+    const tabIds = tabs.map((tab) => tab.id);
+    chrome.tabs.move(tabIds, { windowId, index: -1 }, cb);
 }
