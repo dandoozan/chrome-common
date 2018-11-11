@@ -2,6 +2,10 @@ export function listenForReload() {
     require('./_listenForReload');
 }
 
+export function isWindowFullscreen(window) {
+    return window.state === 'fullscreen';
+}
+
 export function getCurrentWindow() {
     return new Promise((resolve, reject) => {
         chrome.windows.getCurrent(null, resolve);
@@ -9,7 +13,7 @@ export function getCurrentWindow() {
 }
 export function setFullscreenOff(window) {
     return new Promise((resolve, reject) => {
-        chrome.windows.update(window.id, { state: 'normal'}, resolve);
+        chrome.windows.update(window.id, { state: 'normal' }, resolve);
     });
 }
 export function getCurrentTab() {
@@ -55,12 +59,29 @@ export function createNewWindow(windowOptions) {
 export async function moveTabToNewWindow(tab) {
     return await createNewWindow({ tabId: tab.id });
 }
+export async function moveTabToNewWindowOnTheRight(tab) {
+    return await createNewWindow({
+        tabId: tab.id,
+        left: await getScreenWidth() / 2,
+        top: 0,
+        width: await getScreenWidth() / 2,
+        height: await getScreenHeight(),
+    });
+}
 
-export function moveTabsToExistingWindow(tabs, windowId) {
+async function focusTab(tab) {
+    return new Promise((resolve, reject) => {
+        chrome.tabs.update(tab.id, { active: true }, (tab) => resolve);
+    });
+}
+
+export function moveTabsToWindow(tabs, window) {
     return new Promise((resolve, reject) => {
         const tabIds = tabs.map((tab) => tab.id);
-        chrome.tabs.move(tabIds, { windowId, index: -1 }, (tabs) => {
-            resolve(tabs);
+        chrome.tabs.move(tabIds, { windowId: window.id, index: -1 }, async (tabOrTabs) => {
+            //focus the first tab (otherwise, they're unfocused)
+            await focusTab(Array.isArray(tabOrTabs) ? tabOrTabs[0] : tabOrTabs);
+            resolve(tabOrTabs);
         });
     });
 }
@@ -112,5 +133,33 @@ export async function moveWindowToLeftSide(window) {
         chrome.windows.update(window.id, options, resolve);
     });
 }
+
+function getAllWindows() {
+    return new Promise((resolve, reject) => {
+        chrome.windows.getAll({
+            populate: true,
+            windowTypes: ['normal'],
+        }, resolve);
+    });
+}
+
+async function isWindowHalfScreenSize(window) {
+    return window.width === (await getScreenWidth() / 2) && window.height === await getScreenHeight();
+}
+async function isWindowOnRightSideOfScreen(window) {
+    return await isWindowHalfScreenSize(window) && window.left === (await getScreenWidth() / 2);
+}
+
+export async function getWindowsOnRightSideOfScreen() {
+    const windows = await getAllWindows();
+    const windowsOnRightSideOfScreen = [];
+    for (const window of windows) {
+        if (await isWindowOnRightSideOfScreen(window)) {
+            windowsOnRightSideOfScreen.push(window);
+        }
+    }
+    return windowsOnRightSideOfScreen;
+}
+
 
 
