@@ -37,10 +37,8 @@ export function getAllSelectedTabs() {
         });
     });
 }
-export function closeTab(tab) {
-    return new Promise((resolve, reject) => {
-        chrome.tabs.remove(tab.id, resolve);
-    });
+export async function closeTab(tab) {
+    await closeTabs([tab]);
 }
 export function closeTabs(tabs) {
     return new Promise((resolve, reject) => {
@@ -56,9 +54,11 @@ export function createNewWindow(windowOptions) {
     });
 }
 
+//todo: move this to ChromeKeyboardShortcuts
 export async function moveTabToNewWindow(tab) {
     return await createNewWindow({ tabId: tab.id });
 }
+//todo: move this to ChromeKeyboardShortcuts
 export async function moveTabToNewWindowOnTheRight(tab) {
     return await createNewWindow({
         tabId: tab.id,
@@ -111,6 +111,7 @@ export async function getScreenHeight() {
     return displayInfo.workArea.height;
 }
 
+//todo: move this to ChromeKeyboardShortcuts
 export async function moveWindowToRightSide(window) {
     return new Promise(async (resolve, reject) => {
         const options = {
@@ -122,6 +123,7 @@ export async function moveWindowToRightSide(window) {
         chrome.windows.update(window.id, options, resolve);
     });
 }
+//todo: move this to ChromeKeyboardShortcuts
 export async function moveWindowToLeftSide(window) {
     return new Promise(async (resolve, reject) => {
         const options = {
@@ -143,13 +145,16 @@ function getAllWindows() {
     });
 }
 
+//todo: move this to ChromeKeyboardShortcuts
 async function isWindowHalfScreenSize(window) {
     return window.width === (await getScreenWidth() / 2) && window.height === await getScreenHeight();
 }
+//todo: move this to ChromeKeyboardShortcuts
 async function isWindowOnRightSideOfScreen(window) {
     return await isWindowHalfScreenSize(window) && window.left === (await getScreenWidth() / 2);
 }
 
+//todo: move this to ChromeKeyboardShortcuts
 export async function getWindowsOnRightSideOfScreen() {
     const windows = await getAllWindows();
     const windowsOnRightSideOfScreen = [];
