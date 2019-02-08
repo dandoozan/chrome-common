@@ -1,4 +1,4 @@
-const CRX_RELOADER_EXTENSION_ID = 'pcclhjignldjfdhkdmihngpdocikjhoa';
+const CRX_RELOADER_EXTENSION_ID = 'fgfndkaphkfepbnbncgofllbodlkgdio';
 const RELOAD_MESSAGE = 'dpd_reloadExtension';
 
 const BADGE_MESSAGE = 'RLD'; //for 'reloaded'
