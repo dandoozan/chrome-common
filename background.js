@@ -2,6 +2,10 @@ export function getManifest() {
     return chrome.runtime.getManifest();
 }
 
+export function getExtensionId() {
+    return chrome.runtime.id;
+}
+
 export function listenForReload() {
     require('./_listenForReload');
 }
