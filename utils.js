@@ -6,10 +6,6 @@ export function getExtensionId() {
     return chrome.runtime.id;
 }
 
-export function listenForReload() {
-    require('./_listenForReload');
-}
-
 export function isWindowFullscreen(window) {
     return window.state === 'fullscreen';
 }
