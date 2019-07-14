@@ -2,6 +2,18 @@ export function getManifest() {
     return chrome.runtime.getManifest();
 }
 
+export function getFromStorage(whatToGet) {
+    return new Promise((resolve, reject) => {
+        chrome.storage.sync.get(whatToGet, resolve);
+    });
+}
+
+export function setToStorage(whatToSet) {
+    return new Promise((resolve, reject) => {
+        chrome.storage.sync.set(whatToSet, resolve);
+    });
+}
+
 /*The below is from: https://developer.mozilla.org/en-US/Add-ons/WebExtensions/Match_patterns
 /**
  * Transforms a valid match pattern into a regular expression
