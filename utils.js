@@ -68,7 +68,6 @@ function convertMatchPatternToRegExp(pattern) {
 }
 
 export function getMatchesObjectFromManifest(url) {
-    console.log('​getMatchesObjectFromManifest -> url=', url);
     //this function gets the "matches" object for the given url (ie. the
     //object that looks like:
     //{
