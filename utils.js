@@ -2,13 +2,13 @@ export function getManifest() {
     return chrome.runtime.getManifest();
 }
 
-export function getFromStorage(whatToGet) {
+export function readFromStorage(whatToGet) {
     return new Promise((resolve, reject) => {
         chrome.storage.sync.get(whatToGet, resolve);
     });
 }
 
-export function setToStorage(whatToSet) {
+export function writeToStorage(whatToSet) {
     return new Promise((resolve, reject) => {
         chrome.storage.sync.set(whatToSet, resolve);
     });
