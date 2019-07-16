@@ -2,9 +2,29 @@ export function getManifest() {
     return chrome.runtime.getManifest();
 }
 
+export async function loadOptions() {
+    try {
+        //get the options from options.json if it exists
+        return require('../options.json');
+    } catch (error) {
+        //otherwise, get the options from storage
+        return JSON.parse(
+            (await readFromStorage({
+                options: JSON.stringify(sampleOptions),
+            })).options
+        );
+    }
+}
+
 export function readFromStorage(whatToGet) {
     return new Promise((resolve, reject) => {
         chrome.storage.sync.get(whatToGet, resolve);
+    });
+}
+
+export function clearStorage() {
+    return new Promise((resolve, reject) => {
+        chrome.storage.sync.clear(resolve);
     });
 }
 
@@ -79,7 +99,10 @@ function convertMatchPatternToRegExp(pattern) {
     return new RegExp(regex);
 }
 
-export function getMatchesObjectFromManifest(url) {
+export function getContentScriptObject(
+    url,
+    contentScripts = getManifest().content_scripts
+) {
     //this function gets the "matches" object for the given url (ie. the
     //object that looks like:
     //{
@@ -92,15 +115,16 @@ export function getMatchesObjectFromManifest(url) {
     //         { "keyCombo": "alt+enter", "fnName": "openAllLinks" }
     //     ]
     //}
-    let contentScripts = getManifest().content_scripts;
-    for (let matchesObj of contentScripts) {
-        let matchesArr = matchesObj.matches;
-        for (let urlPatternAsMatchPattern of matchesArr) {
-            let urlPatternAsRegex = convertMatchPatternToRegExp(
-                urlPatternAsMatchPattern
-            );
-            if (urlPatternAsRegex.test(url)) {
-                return matchesObj;
+    if (contentScripts) {
+        for (let contentScriptObj of contentScripts) {
+            let matchesArr = contentScriptObj.matches;
+            for (let urlGlob of matchesArr) {
+                if (
+                    url === urlGlob ||
+                    convertMatchPatternToRegExp(urlGlob).test(url)
+                ) {
+                    return contentScriptObj;
+                }
             }
         }
     }
