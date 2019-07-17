@@ -3,14 +3,14 @@ export function getManifest() {
 }
 
 export async function loadOptions() {
+    //first try to get options from options.json
     try {
-        //get the options from options.json if it exists
         return require('../options.json');
     } catch (error) {
         //otherwise, get the options from storage
         return JSON.parse(
             (await readFromStorage({
-                options: JSON.stringify(sampleOptions),
+                options: '{}',
             })).options
         );
     }
@@ -34,10 +34,7 @@ export function writeToStorage(whatToSet) {
     });
 }
 
-export function getContentScriptObject(
-    url,
-    contentScripts = getManifest().content_scripts
-) {
+export async function getContentScriptObject(url, contentScripts) {
     //this function gets the "matches" object for the given url (ie. the
     //object that looks like:
     //{
@@ -46,10 +43,10 @@ export function getContentScriptObject(
     //         "js/contentScripts/google.bundle.js",
     //         "js/contenScripts/_main.js"
     //     ],
-    //     "keyboard_shortcuts": [
-    //         { "keyCombo": "alt+enter", "fnName": "openAllLinks" }
-    //     ]
+    //     "my_custom_property": "value"
     //}
+
+    //if contenScripts has been passed in, get it from there
     if (contentScripts) {
         for (let contentScriptObj of contentScripts) {
             let matchesArr = contentScriptObj.matches;
@@ -62,6 +59,21 @@ export function getContentScriptObject(
                 }
             }
         }
+    } else {
+        //otherwise, first try to get it from manifest.json
+        let contentScriptObj = await getContentScriptObject(
+            url,
+            getManifest().content_scripts || []
+        );
+        if (contentScriptObj) {
+            return contentScriptObj;
+        }
+
+        //if that doesn't work, then try to get it from options
+        return await getContentScriptObject(
+            url,
+            (await loadOptions()).content_scripts || []
+        );
     }
 }
 
