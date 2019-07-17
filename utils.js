@@ -8,11 +8,7 @@ export async function loadOptions() {
         return require('../options.json');
     } catch (error) {
         //otherwise, get the options from storage
-        return JSON.parse(
-            (await readFromStorage({
-                options: '{}',
-            })).options
-        );
+        return await readFromStorage({ options: {} });
     }
 }
 
