@@ -34,7 +34,8 @@ export async function getContentScriptObject(url, contentScripts) {
     //this function gets the "matches" object for the given url (ie. the
     //object that looks like:
     //{
-    //     "matches": ["https://www.google.com/search?*"],
+    //     "matches": ["https://www.google.com/*"],
+    //     "exclude_matches": ["https://www.google.com/search?*"],
     //     "js": [
     //         "js/contentScripts/google.bundle.js",
     //         "js/contenScripts/_main.js"
@@ -42,17 +43,27 @@ export async function getContentScriptObject(url, contentScripts) {
     //     "my_custom_property": "value"
     //}
 
+    function isMatch(url, urlGlobs) {
+        if (url && urlGlobs) {
+            return (
+                urlGlobs.filter(
+                    urlGlob =>
+                        url === urlGlob ||
+                        convertMatchPatternToRegExp(urlGlob).test(url)
+                ).length > 0
+            );
+        }
+        return false;
+    }
+
     //if contenScripts has been passed in, get it from there
     if (contentScripts) {
         for (let contentScriptObj of contentScripts) {
-            let matchesArr = contentScriptObj.matches;
-            for (let urlGlob of matchesArr) {
-                if (
-                    url === urlGlob ||
-                    convertMatchPatternToRegExp(urlGlob).test(url)
-                ) {
-                    return contentScriptObj;
-                }
+            let { matches, exclude_matches } = contentScriptObj;
+            //if the url matches one of the urls in "matches" and
+            //does NOT match one of the urls in "exclude_matches", return this obj
+            if (isMatch(url, matches) && !isMatch(url, exclude_matches)) {
+                return contentScriptObj;
             }
         }
     } else {
