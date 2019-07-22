@@ -45,13 +45,15 @@ export async function getContentScriptObject(url, contentScripts) {
 
     function isMatch(url, urlGlobs) {
         if (url && urlGlobs) {
-            return (
-                urlGlobs.filter(
-                    urlGlob =>
-                        url === urlGlob ||
-                        convertMatchPatternToRegExp(urlGlob).test(url)
-                ).length > 0
-            );
+            for (let urlGlob of urlGlobs) {
+                let m = convertMatchPatternToRegExp(urlGlob).test(url);
+                if (
+                    url === urlGlob ||
+                    convertMatchPatternToRegExp(urlGlob).test(url)
+                ) {
+                    return true;
+                }
+            }
         }
         return false;
     }
@@ -215,7 +217,10 @@ function convertMatchPatternToRegExp(pattern) {
             regex += '(/.*)?';
         } else if (path.charAt(0) !== '/') {
             regex += '/';
-            regex += path.replace(/\./g, '\\.').replace(/\*/g, '.*?');
+            regex += path
+                .replace(/\./g, '\\.')
+                .replace(/\?/g, '\\?')
+                .replace(/\*/g, '.*?');
             regex += '/?';
         }
     }
