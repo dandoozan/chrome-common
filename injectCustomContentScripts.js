@@ -21,7 +21,7 @@ import { loadOptions, getContentScriptObject } from '../utils';
             if (contentScriptObj && contentScriptObj.js) {
                 //inject the scripts in "js"
                 contentScriptObj.js.forEach(file => {
-                    chrome.tabs.executeScript({
+                    chrome.tabs.executeScript(tabId, {
                         file,
                     });
                 });
