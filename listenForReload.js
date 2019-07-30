@@ -37,11 +37,14 @@ function reloadThisExtension() {
 }
 
 function handleOnMessageExternal(request, sender, sendResponse) {
-    if (sender.id === CRX_RELOADER_EXTENSION_ID) {
-        //ensure the msg is coming from the CrxReloader extension
-        if (request.msg === RELOAD_MESSAGE) {
-            reloadThisExtension();
-        }
+    if (
+        sender.id === CRX_RELOADER_EXTENSION_ID &&
+        request.msg === RELOAD_MESSAGE
+    ) {
+        reloadThisExtension();
+
+        //send response of true on success to let sender know the message was received and handled
+        sendResponse(true);
     }
 }
 
