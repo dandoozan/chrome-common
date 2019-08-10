@@ -1,4 +1,4 @@
-import { loadOptions, getContentScriptObject } from '../utils';
+import { loadOptions, getContentScriptObject } from './utils';
 
 (async () => {
     const { content_scripts: contentScripts } = await loadOptions();

@@ -5,7 +5,7 @@ export function getManifest() {
 export async function loadOptions() {
     //first try to get options from options.json
     try {
-        return require('../options.json');
+        return require('../../options.json');
     } catch (error) {
         //otherwise, get the options from storage
         return await readFromStorage({ options: {} });
