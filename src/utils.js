@@ -46,7 +46,6 @@ export async function getContentScriptObject(url, contentScripts) {
     function isMatch(url, urlGlobs) {
         if (url && urlGlobs) {
             for (let urlGlob of urlGlobs) {
-                let m = convertMatchPatternToRegExp(urlGlob).test(url);
                 if (
                     url === urlGlob ||
                     convertMatchPatternToRegExp(urlGlob).test(url)
@@ -139,8 +138,6 @@ export function getAllSelectedTabs() {
 function getDisplayInfo() {
     return new Promise((resolve, reject) => {
         chrome.system.display.getInfo(displays => {
-            //displays is an array of displays, which presumably is for when a user
-            //has multiple monitors, but i dont so I'm just taking the first one
             resolve(displays[0]);
         });
     });
@@ -149,15 +146,13 @@ function getDisplayInfo() {
 export async function getScreenWidth() {
     const displayInfo = await getDisplayInfo();
 
-    //use workArea since this is the area that excludes the menu bar at the
-    //of the screen
+    //use workArea since that excludes the menu bar at the top of the screen
     return displayInfo.workArea.width;
 }
 export async function getScreenHeight() {
     const displayInfo = await getDisplayInfo();
 
-    //use workArea since this is the area that excludes the menu bar at the
-    //of the screen
+    //use workArea since that excludes the menu bar at the top of the screen
     return displayInfo.workArea.height;
 }
 
