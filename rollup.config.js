@@ -1,4 +1,3 @@
-import cleaner from 'rollup-plugin-cleaner';
 import glob from 'glob';
 
 //create a separate config for each file so that rollup fully bundles each file without
@@ -12,14 +11,4 @@ export default glob.sync(`src/*.js`).map((pathToFile, i) => ({
         dir: './dist',
         format: 'esm',
     },
-
-    //add the cleaner plugin to the first config only
-    plugins:
-        i === 0
-            ? [
-                  cleaner({
-                      targets: ['./dist/'],
-                  }),
-              ]
-            : [],
 }));
