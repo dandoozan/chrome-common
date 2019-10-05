@@ -6,9 +6,9 @@ import glob from 'glob';
 //able to "import" from those other files, so it doesn't bundle anything -- it just outputs
 //the files as they are.
 export default glob.sync(`src/*.js`).map((pathToFile, i) => ({
-    input: pathToFile,
-    output: {
-        dir: './dist',
-        format: 'esm',
-    },
+  input: pathToFile,
+  output: {
+    dir: './dist',
+    format: 'esm',
+  },
 }));

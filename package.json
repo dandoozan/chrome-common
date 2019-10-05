@@ -1,16 +1,16 @@
 {
-    "name": "chrome-common",
-    "version": "1.0.0",
-    "description": "",
-    "main": "index.js",
-    "scripts": {
-        "build": "rollup --config",
-        "watch": "rollup -w --config"
-    },
-    "author": "",
-    "license": "ISC",
-    "devDependencies": {
-        "glob": "^7.1.4",
-        "rollup": "^1.19.4"
-    }
+  "name": "chrome-common",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "rollup --config",
+    "watch": "rollup -w --config"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "glob": "^7.1.4",
+    "rollup": "^1.19.4"
+  }
 }
