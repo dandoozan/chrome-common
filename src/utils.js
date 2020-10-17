@@ -69,7 +69,11 @@ export async function getContentScriptObject(url, contentScripts) {
   function isMatch(url, urlGlobs) {
     if (url && urlGlobs) {
       for (let urlGlob of urlGlobs) {
-        if (url === urlGlob || convertMatchPatternToRegExp(urlGlob).test(url)) {
+        if (
+          url === urlGlob ||
+          urlGlob === '<all_urls>' ||
+          convertMatchPatternToRegExp(urlGlob).test(url)
+        ) {
           return true;
         }
       }
