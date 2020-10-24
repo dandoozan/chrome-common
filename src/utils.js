@@ -31,13 +31,13 @@ export function writeToStorage(whatToSet) {
 }
 
 export function onMessage(msg, callback) {
-  chrome.runtime.onMessage.addListener(function(
-    { message },
+  chrome.runtime.onMessage.addListener(function (
+    { message, data },
     sender,
     sendResponse
   ) {
     if (message === msg) {
-      sendResponse(callback());
+      sendResponse(callback(data, sender));
     } else {
       sendResponse(null);
     }
@@ -46,10 +46,16 @@ export function onMessage(msg, callback) {
   });
 }
 
-export async function sendMessageToCurrentTab(message) {
-  return new Promise(async function(resolve) {
+export async function sendMessageToCurrentTab(message, data) {
+  return new Promise(async function (resolve) {
     let { id } = await getCurrentTab();
-    chrome.tabs.sendMessage(id, { message }, resolve);
+    chrome.tabs.sendMessage(id, { message, data }, resolve);
+  });
+}
+
+export async function sendMessageToBackground(message, data) {
+  return new Promise(async function (resolve) {
+    chrome.runtime.sendMessage({ message, data }, resolve);
   });
 }
 
