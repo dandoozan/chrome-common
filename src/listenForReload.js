@@ -1,5 +1,5 @@
 (() => {
-  const CRX_RELOADER_EXTENSION_ID = 'dbjgnbnjfkknapiglekebcdofafafkok';
+  const CRX_RELOADER_EXTENSION_ID = 'paocmaifdmfljmoolediklemnlnmdefb';
   const RELOAD_MESSAGE = 'reloadExtension';
   const BADGE_MESSAGE = 'RLD'; //for 'reloaded'
   const BADGE_COLOR = '#4cb749'; //green
